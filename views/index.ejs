@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+
+<link rel="stylesheet" type="text/css"
+          href="https://fonts.googleapis.com/css?family=Patua+One">
+    <style>
+      body {
+        font-family: 'Patua One', cursive !important;
+        font-size: 64px;
+      }
+    </style>
+
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>Test1</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <link href="/Styles/index_style.css" rel="stylesheet" type="text/css">
+  </head>
+  <body>
+<!--<textarea id="textarea" rows=10 cols=80></textarea>-->
+<div class = "wrapper">
+  <button id="button" onclick="toggleStartStop()"></button>
+  <div id= embed></div>
+</div>
+<script>
+function playIt()
+  {
+    console.log("tried")
+    document.getElementById("embed").innerHTML="<embed src='/sounds/play.mp3' autostart=true loop=false volume=100 hidden=true>";
+    return true;
+  }
+</script>
+  <script src="/javascripts/finished.js" type="text/javascript"></script>
+
+  <script type="text/javascript">
+    
+
+
+    var recognizing;
+    var recognition = new webkitSpeechRecognition();
+    recognition.continuous = true;
+    recognition.interim = true;
+    reset();
+    stuff = [];
+    working = [];
+    recognition.onend = reset;
+    recognition.onresult = function (event) {
+      for (var i = 0; i < event.results.length; ++i) {
+        if (event.results.final){
+          //textarea.value += event.results[i][0].transcript;
+          console.log("final" + event.results[i][0].transcript)
+        }else{
+          //textarea.value += event.results[i][0].transcript;
+          stuff[i] = event.results[event.results.length-1][0].transcript
+          //console.log(event.results[event.results.length-1][0].transcript)
+        }
+          //console.log(event.results[i][0].transcript)
+
+       
+        for(var j = 0; j < 1; j++){
+          if(stuff.length > 1){
+            //console.log(stuff[j])
+            //console.log(numberChecker(stuff[j]))
+            if(numberChecker(stuff[j]) == true){
+
+              var resp = rephrase(stuff[j]);
+
+              rephrase(stuff[j]).then(function(bool){
+                console.log(bool)
+                if(!bool){
+                  playIt();
+                }
+              });
+            }
+            }
+          else{
+            //console.log(stuff[j])
+            //console.log(numberChecker(stuff[j]))
+            if(numberChecker(stuff[j]) == true){
+
+              rephrase(stuff[j]).then(function(bool){
+                console.log(bool)
+                if(!bool){
+                  playIt();
+                }
+              });
+            }
+
+            }
+          }
+            
+          
+        }
+
+
+      }
+    
+    function reset() {
+      recognizing = false;
+      button.innerHTML = "Call out their BS";
+    }
+    function toggleStartStop() {
+      if (recognizing) {
+        recognition.stop();
+        reset();
+      } else {
+        recognition.start();
+        recognizing = true;
+        button.innerHTML = "Checking for BS";
+      }
+    }
+  </script>
+
+
+
+  </body>
+</html>
